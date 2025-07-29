@@ -1,2 +1,8 @@
 parameters:
     level: max
+    typeAliases:
+        SimpleAssoc: 'array<string, string|bool|int|float|null>'
+        DeepAssoc: 'array<string, string|bool|int|float|null|array<string, mixed>>'
+        SerializedEnvelope: 'array{payload: DeepAssoc, metadata: SimpleAssoc}'
+        RecordValue: 'string|bool|int|float|object|null|DeepAssoc|SimpleAssoc|SerializedEnvelope'
+        RecordData: 'array<string, RecordValue>'

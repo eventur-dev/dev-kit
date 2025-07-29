@@ -2,10 +2,5 @@
   "name": "eventur/dev-kit",
   "type": "library",
   "description": "Shared dev configuration for Eventur libraries",
-  "license": "MIT",
-  "extra": {
-    "branch-alias": {
-      "dev-main": "1.0-dev"
-    }
-  }
+  "license": "proprietary"
 }

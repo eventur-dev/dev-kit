@@ -1,17 +1,19 @@
-name: CI
+name: Reusable CI
 
 on:
-    push:
-        branches: [ main ]
-    pull_request:
+    workflow_call:
+        secrets:
+            PERSONAL_ACCESS_TOKEN:
+                required: true
 
 jobs:
     build:
         runs-on: ubuntu-latest
-
         env:
             UID: 0
             GID: 0
+            PHP_CS_FIXER_IGNORE_ENV: 1
+            COMPOSER_HOME: /tmp/composer
 
         steps:
             - name: Checkout code
@@ -23,26 +25,35 @@ jobs:
             - name: Set up Docker Compose
               run: sudo apt-get update && sudo apt-get install -y docker-compose
 
+            - name: Inject composer auth.json with token
+              run: |
+                  mkdir -p docker/composer
+                  echo '{
+                    "github-oauth": {
+                      "github.com": "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+                    }
+                  }' > docker/composer/auth.json
+
             - name: Build and start services
-              run: make build
+              run: ./bin/build.sh
 
             - name: Validate composer.json
-              run: make composer-validate
+              run: ./bin/validate.sh
 
             - name: Install Composer dependencies
-              run: make install
+              run: ./bin/install.sh
 
             - name: Run PHP CS Fixer check
-              run: make cs-check
+              run: ./bin/dev-kit-exec.sh cs-check
 
             - name: Run PHPStan
-              run: make phpstan
+              run: ./bin/dev-kit-exec.sh phpstan
 
             - name: Run unit tests
-              run: make test-unit
+              run: ./bin/dev-kit-exec.sh test-unit
 
             - name: Run integration tests
-              run: make test-integration
+              run: ./bin/dev-kit-exec.sh test-integration
 
             - name: Enforce 100% test coverage
-              run: make test-coverage-strict
+              run: ./bin/dev-kit-exec.sh test-coverage-strict
