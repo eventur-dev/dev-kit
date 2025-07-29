@@ -1,0 +1,48 @@
+name: CI
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        env:
+            UID: 0
+            GID: 0
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Set up Docker Compose
+              run: sudo apt-get update && sudo apt-get install -y docker-compose
+
+            - name: Build and start services
+              run: make build
+
+            - name: Validate composer.json
+              run: make composer-validate
+
+            - name: Install Composer dependencies
+              run: make install
+
+            - name: Run PHP CS Fixer check
+              run: make cs-check
+
+            - name: Run PHPStan
+              run: make phpstan
+
+            - name: Run unit tests
+              run: make test-unit
+
+            - name: Run integration tests
+              run: make test-integration
+
+            - name: Enforce 100% test coverage
+              run: make test-coverage-strict
