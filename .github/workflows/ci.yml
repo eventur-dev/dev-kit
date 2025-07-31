@@ -14,6 +14,7 @@ jobs:
             GID: 0
             PHP_CS_FIXER_IGNORE_ENV: 1
             COMPOSER_HOME: /tmp/composer
+            HOME: /tmp
 
         steps:
             - name: Checkout code
