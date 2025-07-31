@@ -26,22 +26,18 @@ jobs:
               run: sudo apt-get update && sudo apt-get install -y docker-compose
 
             - name: Inject composer auth.json with token
-              run: |
-                  mkdir -p docker/composer
-                  echo '{
-                    "github-oauth": {
-                      "github.com": "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
-                    }
-                  }' > docker/composer/auth.json
+              run: ./bin/generate_composer_auth.sh
+              env:
+                  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
             - name: Build and start services
               run: ./bin/build.sh
 
             - name: Validate composer.json
-              run: ./bin/validate.sh
+              run: ./bin/exec.sh validate
 
             - name: Install Composer dependencies
-              run: ./bin/install.sh
+              run: ./bin/exec.sh install
 
             - name: Run PHP CS Fixer check
               run: ./bin/dev-kit-exec.sh cs-check
