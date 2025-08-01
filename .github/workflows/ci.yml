@@ -27,7 +27,7 @@ jobs:
               run: sudo apt-get update && sudo apt-get install -y docker-compose
 
             - name: Inject composer auth.json with token
-              run: ./bin/generate_composer_auth.sh
+              run: ./bin/generate-composer-auth.sh
               env:
                   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
