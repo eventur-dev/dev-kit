@@ -1,0 +1,12 @@
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/dev-tools-config.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/exception.git"
+    }
+  ]
+}
