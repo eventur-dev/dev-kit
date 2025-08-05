@@ -1,3 +1,4 @@
 #!/bin/bash
 set -e
+
 vendor/bin/php-cs-fixer fix --allow-risky=yes
