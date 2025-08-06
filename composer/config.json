@@ -6,7 +6,59 @@
     },
     {
       "type": "vcs",
+      "url": "https://github.com/eventur-dev/test-utils.git"
+    },
+    {
+      "type": "vcs",
       "url": "https://github.com/eventur-dev/exception.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/record.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/record-mapper-mongodb.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/envelope.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/envelope-restorer.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/payload-serializer.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/payload-serializer-symfony.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/uuid.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/uuid7-ramsey.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/upcast.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/store.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/reflection.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/clock.git"
     }
   ]
 }
