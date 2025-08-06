@@ -5,7 +5,6 @@ on:
         secrets:
             PERSONAL_ACCESS_TOKEN:
                 required: true
-
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -14,21 +13,12 @@ jobs:
             COMPOSER_HOME: /tmp/composer
             COMPOSER_CACHE_DIR: /tmp/composer/cache
             HOME: /tmp
+            UID: 0
+            GID: 0
 
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
-
-            - name: Detect UID and GID
-              id: user
-              run: |
-                  echo "uid=$(id -u)" >> "$GITHUB_OUTPUT"
-                  echo "gid=$(id -g)" >> "$GITHUB_OUTPUT"
-
-            - name: Set UID and GID in env
-              run: |
-                  echo "UID=${{ steps.user.outputs.uid }}" >> "$GITHUB_ENV"
-                  echo "GID=${{ steps.user.outputs.gid }}" >> "$GITHUB_ENV"
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
