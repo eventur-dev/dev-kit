@@ -42,6 +42,7 @@ jobs:
                 HOME: /tmp
                 COMPOSER_HOME: /tmp/composer
                 PHP_CS_FIXER_IGNORE_ENV: 1
+                PROJECT_ROOT: ${{ github.workspace }}
               run: .dev-kit/build.sh
 
             - name: Validate composer.json
