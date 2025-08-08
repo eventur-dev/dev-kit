@@ -1,4 +1,4 @@
 #!/bin/bash
-set -e
-
+set -euo pipefail
+source .dev-kit/compose.sh
 docker compose up -d --build

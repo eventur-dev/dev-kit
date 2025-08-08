@@ -8,14 +8,6 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-        env:
-            PHP_CS_FIXER_IGNORE_ENV: 1
-            COMPOSER_HOME: /tmp/composer
-            COMPOSER_CACHE_DIR: /tmp/composer/cache
-            HOME: /tmp
-            UID: 0
-            GID: 0
-
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -44,6 +36,12 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
             - name: Build and start services
+              env:
+                UID: 0
+                GID: 0
+                HOME: /tmp
+                COMPOSER_HOME: /tmp/composer
+                PHP_CS_FIXER_IGNORE_ENV: 1
               run: .dev-kit/build.sh
 
             - name: Validate composer.json

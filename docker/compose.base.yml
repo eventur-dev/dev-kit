@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: ${PROJECT_ROOT}/.dev-kit/docker/Dockerfile
+      args:
+        WORKDIR: ${WORKDIR:-/workspace}
+        INSTALL_XDEBUG: ${INSTALL_XDEBUG:-1}
+        EXTRA_APT: ${EXTRA_APT:-}
+        EXTRA_PHP_EXT: ${EXTRA_PHP_EXT:-}
+        EXTRA_PECL: ${EXTRA_PECL:-}
+    user: "${UID}:${GID}"
+
+    working_dir: ${WORKDIR:-/workspace}
+
+    environment:
+      UID: ${UID:-0}
+      GID: ${GID:-0}
+      PHP_CS_FIXER_IGNORE_ENV: ${PHP_CS_FIXER_IGNORE_ENV:-1}
+      PHP_IDE_CONFIG: ${PHP_IDE_CONFIG:-}
+      COMPOSER_HOME: ${COMPOSER_HOME:-/tmp/composer}
+      HOME: ${HOME:-/tmp}
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    volumes:
+      - ${PROJECT_ROOT}:${WORKDIR:-/workspace}
+      - ${PROJECT_ROOT}/.dev-kit:/.dev-kit
+      - ${PROJECT_ROOT}/docker/composer/auth.json:/tmp/composer/auth.json
+
+    tty: true

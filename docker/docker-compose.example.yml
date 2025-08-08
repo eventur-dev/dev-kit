@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: my-package-app
+    working_dir: /my-package
+    volumes:
+      - ${PROJECT_ROOT}:/my-package
+
+    # Optional: build arguments to customize the common Dockerfile for this package
+    # Uncomment and set only if needed
+    # build:
+    #   args:
+    #     INSTALL_XDEBUG: "0"          # 0 = disable xdebug, 1 = enable (default)
+    #     EXTRA_APT: "git-lfs"         # extra APT packages to install
+    #     EXTRA_PHP_EXT: "intl pcntl"  # extra PHP extensions to compile
+    #     EXTRA_PECL: "redis"          # extra PECL packages to install
