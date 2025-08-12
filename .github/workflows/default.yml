@@ -1,71 +1,60 @@
 name: Reusable CI
 
 on:
-    workflow_call:
-        secrets:
-            PERSONAL_ACCESS_TOKEN:
-                required: true
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    env:
+      UID: 0
+      GID: 0
+      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx (local daemon)
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
+
+      - name: Configure Git to use token (composer git deps)
+        run: git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+      - name: Dev-kit init
+        run: ./init.sh
+
+      - name: Build and start services
+        run: .dev-kit/docker-build.sh
         env:
-            PHP_CS_FIXER_IGNORE_ENV: 1
-            COMPOSER_HOME: /tmp/composer
-            COMPOSER_CACHE_DIR: /tmp/composer/cache
-            HOME: /tmp
-            UID: 0
-            GID: 0
+          DOCKER_BUILDKIT: "1"
+          BUILDKIT_PROGRESS: "plain"
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+      - name: Validate composer.json
+        run: .dev-kit/docker-exec.sh composer-validate
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
+      - name: Install Composer dependencies
+        run: .dev-kit/docker-exec.sh composer-install
 
-            - name: Set up Docker Compose
-              run: sudo apt-get update && sudo apt-get install -y --no-install-recommends docker-compose
+      - name: Run PHP CS Fixer check
+        run: .dev-kit/docker-exec.sh cs-check
 
-            - name: Configure Git to use token
-              run: |
-                  git config --global url."https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/".insteadOf "https://github.com/"
+      - name: Run PHPStan
+        run: .dev-kit/docker-exec.sh phpstan
 
-            - name: Make init.sh executable
-              run: chmod +x ./init.sh
+      - name: Run unit tests
+        run: .dev-kit/docker-exec.sh test-unit
 
-            - name: Dev-kit init
-              run: |
-                  ./init.sh
-                  find .dev-kit -type f -name '*.sh' -exec chmod +x {} +
+      - name: Run integration tests
+        run: .dev-kit/docker-exec.sh test-integration
 
-            - name: Inject composer auth.json with token
-              run: .dev-kit/generate-composer-auth.sh
-              env:
-                  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Enforce 100% test coverage
+        run: .dev-kit/docker-exec.sh test-coverage-strict
 
-            - name: Build and start services
-              run: .dev-kit/build.sh
-
-            - name: Validate composer.json
-              run: .dev-kit/exec.sh validate
-
-            - name: Install Composer dependencies
-              run: .dev-kit/exec.sh install
-
-            - name: Run PHP CS Fixer check
-              run: .dev-kit/exec.sh cs-check
-
-            - name: Run PHPStan
-              run: .dev-kit/exec.sh phpstan
-
-            - name: Run unit tests
-              run: .dev-kit/exec.sh test-unit
-
-            - name: Run integration tests
-              run: .dev-kit/exec.sh test-integration
-
-            - name: Enforce 100% test coverage
-              run: .dev-kit/exec.sh test-coverage-strict
-
-            - name: ✅ Build complete
-              run: echo "All checks passed ✔️"
+      - name: Cleanup (always)
+        if: always()
+        run: .dev-kit/docker-down.sh
