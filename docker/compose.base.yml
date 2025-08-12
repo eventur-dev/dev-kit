@@ -1,0 +1,23 @@
+services:
+  devkit:
+    image: eventur/devkit:php-${PHP_VERSION:-8.4}
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: .dev-kit/docker/Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.4}
+    profiles: ["_build-only"]
+
+  component:
+    environment:
+      COMPOSER_AUTH: "{\"github-oauth\":{\"github.com\":\"${GITHUB_TOKEN}\"}}"
+    env_file:
+      - path: .dev-kit/docker/.env.base
+        required: true
+      - path: ./.env
+        required: false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    tty: true
+    user: "${UID:-1000}:${GID:-1000}"
