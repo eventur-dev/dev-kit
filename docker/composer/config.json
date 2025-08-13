@@ -59,6 +59,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/clock.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/back-off.git"
     }
   ]
 }
