@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-vendor/bin/rector process --no-progress-bar
+vendor/bin/rector process --no-progress-bar --ansi
