@@ -53,7 +53,7 @@ jobs:
         run: .dev-kit/docker-exec.sh test-integration
 
       - name: Enforce 100% test coverage
-        run: .dev-kit/docker-exec.sh test-coverage-strict
+        run: .dev-kit/docker-exec.sh test-cover-strict
 
       - name: Cleanup (always)
         if: always()
