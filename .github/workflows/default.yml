@@ -40,6 +40,9 @@ jobs:
       - name: Install Composer dependencies
         run: .dev-kit/docker-exec.sh composer-install
 
+      - name: Run Rector check
+        run: .dev-kit/docker-exec.sh rector-check
+
       - name: Run PHP CS Fixer check
         run: .dev-kit/docker-exec.sh cs-check
 
