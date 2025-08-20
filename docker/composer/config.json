@@ -63,6 +63,18 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/back-off.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/aggregate-root.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/event-publisher.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/event-publisher-symfony-messenger.git"
     }
   ]
 }
