@@ -75,6 +75,14 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/event-publisher-symfony-messenger.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/event-store.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/event-store-schema.git"
     }
   ]
 }
