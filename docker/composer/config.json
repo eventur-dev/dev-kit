@@ -46,10 +46,6 @@
     },
     {
       "type": "vcs",
-      "url": "https://github.com/eventur-dev/upcast.git"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/eventur-dev/store.git"
     },
     {
@@ -83,6 +79,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/event-store-schema.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/upcaster.git"
     }
   ]
 }
