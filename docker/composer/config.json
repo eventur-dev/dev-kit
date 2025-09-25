@@ -83,6 +83,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/upcaster.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/snapshot-store.git"
     }
   ]
 }
