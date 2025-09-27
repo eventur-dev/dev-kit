@@ -91,6 +91,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/snapshot-store-schema.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/outbox-store.git"
     }
   ]
 }
