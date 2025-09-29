@@ -95,6 +95,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/outbox-store.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/outbox-store-schema.git"
     }
   ]
 }
