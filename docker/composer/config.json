@@ -26,10 +26,6 @@
     },
     {
       "type": "vcs",
-      "url": "https://github.com/eventur-dev/envelope-restorer.git"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/eventur-dev/payload-serializer.git"
     },
     {
