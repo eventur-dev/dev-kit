@@ -99,6 +99,18 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/aggregate-root-snapshot.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/backup-store.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/checkpoint-store.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/projection-store.git"
     }
   ]
 }
