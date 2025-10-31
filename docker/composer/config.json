@@ -111,6 +111,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/projection-store.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/checkpoint-store-schema.git"
     }
   ]
 }
