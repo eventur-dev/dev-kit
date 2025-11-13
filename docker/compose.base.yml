@@ -21,3 +21,7 @@ services:
       - "host.docker.internal:host-gateway"
     tty: true
     user: "${UID:-1000}:${GID:-1000}"
+
+networks:
+  eventur:
+    driver: bridge
