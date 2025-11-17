@@ -116,10 +116,21 @@
       "type": "vcs",
       "url": "https://github.com/eventur-dev/checkpoint-store-schema.git"
     },
-
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/store-doctrine-utils.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/event-store-doctrine-dbal.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/event-store-mongodb.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/store-mongodb-utils.git"
     }
   ]
 }
