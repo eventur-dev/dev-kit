@@ -135,6 +135,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/outbox-store-doctrine-dbal.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/outbox-store-mongodb.git"
     }
   ]
 }
