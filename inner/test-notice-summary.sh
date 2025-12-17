@@ -74,34 +74,31 @@ if [[ $EXIT_CODE -ne 0 ]]; then
 fi
 
 # --------------------------------------------------
-# Extract + group notices
+# Extract + group notices (WITH test context)
 # --------------------------------------------------
 declare -A SEEN
 INDEX=1
 
 while IFS= read -r line; do
   if [[ "$line" == *"Test Triggered PHPUnit Notice"* ]]; then
+    # extract test name
+    # Example:
+    # Test Triggered PHPUnit Notice (Foo\Bar\Test::testSomething)
+    TEST_CTX="$(echo "$line" | sed -n 's/.*Notice (\(.*\))/\1/p')"
+
+    # next line is the notice message
     read -r msg || true
 
-    # normalize key (remove test name)
-    KEY="$(echo "$msg" | sed 's/  */ /g')"
+    # normalize message
+    MSG="$(echo "$msg" | sed 's/  */ /g')"
+
+    KEY="$TEST_CTX|$MSG"
 
     if [[ -z "${SEEN[$KEY]:-}" ]]; then
       SEEN[$KEY]=1
-      echo -e "${YELLOW}${INDEX}.${RESET} ${msg}"
+      echo -e "${YELLOW}${INDEX}.${RESET} ${BOLD}${TEST_CTX}${RESET}"
+      echo -e "   ${GRAY}↳${RESET} ${MSG}"
       ((INDEX++))
     fi
   fi
 done < "$TMP_OUT"
-
-echo
-echo -e "${GRAY}--------------------------------------------------${RESET}"
-
-if [[ $INDEX -eq 1 ]]; then
-  echo -e "${GREEN}✔ Tests OK${RESET}  ${YELLOW}⏱ ${DURATION} ms${RESET}"
-  echo -e "${GRAY}No PHPUnit notices were emitted.${RESET}"
-else
-  echo -e "${GREEN}✔ Tests OK${RESET}  ${YELLOW}⏱ ${DURATION} ms${RESET}  ${CYAN}Notices: $((INDEX-1))${RESET}"
-fi
-
-rm -f "$TMP_OUT"
