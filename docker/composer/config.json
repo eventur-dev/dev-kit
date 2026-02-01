@@ -139,6 +139,14 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/snapshot-store-doctrine-dbal.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/checkpoint-store-schema.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/snapshot-store-mongodb.git"
     }
   ]
 }
