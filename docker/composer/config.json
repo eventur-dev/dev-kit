@@ -147,6 +147,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/snapshot-store-mongodb.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/backup-store-mongodb.git"
     }
   ]
 }
