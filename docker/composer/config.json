@@ -155,6 +155,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/checkpoint-store-doctrine-dbal.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/checkpoint-store-mongodb.git"
     }
   ]
 }
