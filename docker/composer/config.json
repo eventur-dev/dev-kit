@@ -159,6 +159,14 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/checkpoint-store-mongodb.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/snapshot-store-inline-doctrine-dbal.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/snapshot-store-inline-mongodb.git"
     }
   ]
 }
