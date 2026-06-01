@@ -167,6 +167,14 @@
     {
       "type": "vcs",
       "url": "https://github.com/eventur-dev/snapshot-store-inline-mongodb.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/projection-store-doctrine-mongodb.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/eventur-dev/projection-store-doctrine-orm.git"
     }
   ]
 }
