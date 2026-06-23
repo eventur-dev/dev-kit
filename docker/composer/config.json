@@ -170,11 +170,11 @@
     },
     {
       "type": "vcs",
-      "url": "https://github.com/eventur-dev/projection-store-doctrine-mongodb.git"
+      "url": "https://github.com/eventur-dev/projection-resetter-doctrine-dbal.git"
     },
     {
       "type": "vcs",
-      "url": "https://github.com/eventur-dev/projection-store-doctrine-orm.git"
+      "url": "https://github.com/eventur-dev/projection-resetter-mongodb.git"
     }
   ]
 }
