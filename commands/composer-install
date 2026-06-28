@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export COMPOSER_ROOT_VERSION="${COMPOSER_ROOT_VERSION:-dev-main}"
+
+composer install
