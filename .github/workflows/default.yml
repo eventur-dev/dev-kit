@@ -1,63 +1,90 @@
-name: Reusable CI
+name: Eventur CI
 
 on:
   workflow_call:
-    secrets:
-      PERSONAL_ACCESS_TOKEN:
-        required: true
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: "8.5"
+
+      mysql:
+        required: false
+        type: boolean
+        default: false
+
+      postgres:
+        required: false
+        type: boolean
+        default: false
+
+      mongo:
+        required: false
+        type: boolean
+        default: false
+
+      all-services:
+        required: false
+        type: boolean
+        default: false
+
+      dev-kit-ref:
+        required: false
+        type: string
+        default: "main"
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
+
     env:
-      UID: 0
-      GID: 0
-      GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      PHP_VERSION: ${{ inputs.php-version }}
+      DEVKIT_MYSQL: ${{ inputs.mysql && '1' || '' }}
+      DEVKIT_POSTGRES: ${{ inputs.postgres && '1' || '' }}
+      DEVKIT_MONGO: ${{ inputs.mongo && '1' || '' }}
+      DEVKIT_ALL_SERVICES: ${{ inputs.all-services && '1' || '' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout package
+        uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Checkout dev-kit
+        uses: actions/checkout@v4
         with:
-          driver: docker
+          repository: eventur-dev/dev-kit
+          ref: ${{ inputs.dev-kit-ref }}
+          path: .dev-kit
 
-      - name: Configure Git to use token (composer git deps)
-        run: git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+      - name: Build
+        run: ./bin/dev build
 
-      - name: Dev-kit init
-        run: ./init.sh
+      - name: Start containers
+        run: ./bin/dev up
 
-      - name: Build and start services
-        run: .dev-kit/docker-build.sh
-        env:
-          DOCKER_BUILDKIT: "1"
-          BUILDKIT_PROGRESS: "plain"
+      - name: Composer validate
+        run: ./bin/dev composer-validate
 
-      - name: Validate composer.json
-        run: .dev-kit/docker-exec.sh composer-validate
+      - name: Composer install
+        run: ./bin/dev composer-install
 
-      - name: Install Composer dependencies
-        run: .dev-kit/docker-exec.sh composer-install
+      - name: Rector
+        run: ./bin/dev rector-check
 
-      - name: Run Rector check
-        run: .dev-kit/docker-exec.sh rector-check
+      - name: PHP CS Fixer
+        run: ./bin/dev cs-check
 
-      - name: Run PHP CS Fixer check
-        run: .dev-kit/docker-exec.sh cs-check
+      - name: PHPStan
+        run: ./bin/dev phpstan
 
-      - name: Run PHPStan
-        run: .dev-kit/docker-exec.sh phpstan
+      - name: Unit tests
+        run: ./bin/dev test-unit
 
-      - name: Run unit tests
-        run: .dev-kit/docker-exec.sh test-unit
+      - name: Integration tests
+        run: ./bin/dev test-integration
 
-      - name: Run integration tests
-        run: .dev-kit/docker-exec.sh test-integration
+      - name: Coverage
+        run: ./bin/dev test-cover-strict
 
-      - name: Enforce 100% test coverage
-        run: .dev-kit/docker-exec.sh test-cover-strict
-
-      - name: Cleanup (always)
+      - name: Shutdown
         if: always()
-        run: .dev-kit/docker-down.sh
+        run: ./bin/dev down

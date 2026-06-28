@@ -1,0 +1,186 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+DEV_KIT_DIR="$ROOT_DIR/.dev-kit"
+COMPOSE_FILE="$DEV_KIT_DIR/docker/compose.yml"
+
+cd "$ROOT_DIR"
+
+if [[ -f "$ROOT_DIR/.env" ]]; then
+    set -a
+    source "$ROOT_DIR/.env"
+    set +a
+fi
+
+export DEVKIT_UID="${DEVKIT_UID:-$(id -u)}"
+export DEVKIT_GID="${DEVKIT_GID:-$(id -g)}"
+export PHP_VERSION="${PHP_VERSION:-8.5}"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-$(basename "$ROOT_DIR" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9_-')}"
+
+profiles_args=()
+
+add_profile() {
+    local enabled="${1:-}"
+    local profile="$2"
+
+    if [[ -n "$enabled" && "$enabled" != "0" && "$enabled" != "false" ]]; then
+        profiles_args+=(--profile "$profile")
+    fi
+}
+
+add_profile "${DEVKIT_MYSQL:-}" "mysql"
+add_profile "${DEVKIT_POSTGRES:-}" "postgres"
+add_profile "${DEVKIT_MONGO:-}" "mongo"
+add_profile "${DEVKIT_ALL_SERVICES:-}" "all"
+
+exec_flags=()
+
+if [[ -n "${CI:-}" ]]; then
+    exec_flags=(-T)
+fi
+
+compose() {
+    docker compose \
+        --project-directory "$ROOT_DIR" \
+        "${profiles_args[@]}" \
+        -f "$COMPOSE_FILE" \
+        "$@"
+}
+
+ensure_running() {
+    compose up -d
+}
+
+print_help() {
+    cat <<EOF
+Eventur Dev Kit
+
+Usage:
+  ./bin/dev <command> [args]
+
+Docker commands:
+  build         Build component image
+  up            Start containers
+  down          Stop and remove containers
+  stop          Stop containers
+  logs          Follow logs
+  bash          Open bash inside component container
+  exec          Execute arbitrary command in component container
+  config        Show resolved Docker Compose configuration
+  config --raw  Show raw Docker Compose configuration
+  fix-perms     Fix file ownership
+
+Service flags:
+  DEVKIT_MYSQL=1
+  DEVKIT_POSTGRES=1
+  DEVKIT_MONGO=1
+  DEVKIT_ALL_SERVICES=1
+
+Available commands:
+EOF
+
+    find "$DEV_KIT_DIR/commands" \
+        -maxdepth 1 \
+        -type f \
+        -executable \
+        -printf "  %f\n" | sort
+
+    cat <<EOF
+
+Examples:
+  ./bin/dev build
+  ./bin/dev up
+  ./bin/dev composer-install
+  ./bin/dev phpstan
+  ./bin/dev test-unit
+EOF
+}
+
+case "${1:-}" in
+    ""|-h|--help|help)
+        print_help
+        ;;
+
+    build)
+        shift
+        compose build component "$@"
+        ;;
+
+    up)
+        shift
+        compose up -d "$@"
+        ;;
+
+    down)
+        shift
+        compose down --remove-orphans "$@"
+        ;;
+
+    clean)
+        shift
+        compose down -v --remove-orphans "$@"
+        ;;
+
+    stop)
+        shift
+        compose stop "$@"
+        ;;
+
+    logs)
+        shift
+        compose logs -f "$@"
+        ;;
+
+    config)
+        shift
+
+        if [[ "${1:-}" == "--raw" ]]; then
+            shift
+            compose config --no-interpolate "$@"
+        else
+            compose config "$@"
+        fi
+        ;;
+
+    bash)
+        shift
+        ensure_running
+        compose exec "${exec_flags[@]}" component bash "$@"
+        ;;
+
+    exec)
+        shift
+        ensure_running
+        compose exec "${exec_flags[@]}" component "$@"
+        ;;
+
+    fix-perms)
+        shift
+
+        docker run --rm \
+            -v "$ROOT_DIR":/workspace \
+            -w /workspace \
+            alpine:3.20 \
+            sh -c "chown -R ${DEVKIT_UID}:${DEVKIT_GID} ."
+        ;;
+
+    *)
+        command="$1"
+
+        host_command_path="$DEV_KIT_DIR/commands/$command"
+        container_command_path="/workspace/.dev-kit/commands/$command"
+
+        if [[ ! -x "$host_command_path" ]]; then
+            echo "Unknown command: $command"
+            echo
+            print_help
+            exit 1
+        fi
+
+        shift
+        ensure_running
+
+        compose exec "${exec_flags[@]}" component "$container_command_path" "$@"
+        ;;
+esac
