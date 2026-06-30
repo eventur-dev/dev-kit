@@ -169,23 +169,63 @@ case "${1:-}" in
         shift
         ensure_running
 
+        print_port() {
+            local service="$1"
+            local port="$2"
+
+            local mapping
+            mapping="$(compose port "$service" "$port" 2>/dev/null || true)"
+
+            if [[ -z "$mapping" ]]; then
+                echo ""
+                return
+            fi
+
+            echo "${mapping##*:}"
+        }
+
+        mysql_port="$(print_port mysql 3306)"
+        postgres_port="$(print_port postgres 5432)"
+        mongo_port="$(print_port mongo 27017)"
+
         echo
+
         echo "MySQL"
-        echo "  Host: localhost"
-        echo "  Port: $(compose port mysql 3306 2>/dev/null | sed 's/.*://')"
-        echo "  Database: mysql_db"
-        echo "  User: root"
-        echo "  Password: root"
+        if [[ -n "$mysql_port" ]]; then
+            echo "  Host: localhost"
+            echo "  Port: $mysql_port"
+            echo "  Database: mysql_db"
+            echo "  User: root"
+            echo "  Password: root"
+        else
+            echo "  not running"
+        fi
+
         echo
+
         echo "PostgreSQL"
-        echo "  Host: localhost"
-        echo "  Port: $(compose port postgres 5432 2>/dev/null | sed 's/.*://')"
-        echo "  Database: postgres_db"
-        echo "  User: root"
-        echo "  Password: root"
+        if [[ -n "$postgres_port" ]]; then
+            echo "  Host: localhost"
+            echo "  Port: $postgres_port"
+            echo "  Database: postgres_db"
+            echo "  User: root"
+            echo "  Password: root"
+        else
+            echo "  not running"
+        fi
+
         echo
+
         echo "MongoDB"
-        echo "  URI: mongodb://localhost:$(compose port mongo 27017 2>/dev/null | sed 's/.*://')/?replicaSet=rs0"
+        if [[ -n "$mongo_port" ]]; then
+            echo "  Host port: $mongo_port"
+            echo "  Inside Docker/tests URI: mongodb://mongo:27017/?replicaSet=rs0"
+            echo "  Shell: ./bin/dev exec mongosh 'mongodb://mongo:27017/?replicaSet=rs0'"
+            echo "  Note: GUI clients from host may not connect correctly because the replica set advertises mongo:27017."
+        else
+            echo "  not running"
+        fi
+
         echo
         ;;
 
