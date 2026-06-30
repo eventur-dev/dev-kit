@@ -218,10 +218,9 @@ case "${1:-}" in
 
         echo "MongoDB"
         if [[ -n "$mongo_port" ]]; then
-            echo "  Host port: $mongo_port"
+            echo "  Compass URI: mongodb://localhost:${mongo_port}/?directConnection=true"
             echo "  Inside Docker/tests URI: mongodb://mongo:27017/?replicaSet=rs0"
-            echo "  Shell: ./bin/dev exec mongosh 'mongodb://mongo:27017/?replicaSet=rs0'"
-            echo "  Note: GUI clients from host may not connect correctly because the replica set advertises mongo:27017."
+            echo "  Shell: ./bin/dev mongo-shell"
         else
             echo "  not running"
         fi
