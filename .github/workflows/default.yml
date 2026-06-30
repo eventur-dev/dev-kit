@@ -33,6 +33,10 @@ on:
         type: string
         default: "main"
 
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -88,3 +92,20 @@ jobs:
       - name: Shutdown
         if: always()
         run: ./bin/dev down
+
+  publish-packages:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger packages rebuild
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          gh api \
+            repos/eventur-dev/packages/dispatches \
+            -f event_type=package-updated \
+            -f client_payload[repository]="${{ github.repository }}" \
+            -f client_payload[sha]="${{ github.sha }}"
