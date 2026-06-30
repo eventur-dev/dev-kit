@@ -48,9 +48,6 @@ services:
     profiles: ["mysql", "all"]
     image: mysql:8.4
 
-    ports:
-      - "3306:3306"
-
     command: --defaults-file=/etc/mysql/conf.d/mysql.cnf
 
     environment:
@@ -75,9 +72,6 @@ services:
     profiles: ["postgres", "all"]
     image: postgres:17
 
-    ports:
-      - "5432:5432"
-
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
@@ -98,9 +92,6 @@ services:
   mongo:
     profiles: ["mongo", "all"]
     image: mongo:8
-
-    ports:
-      - "27017:27017"
 
     command:
       - mongod
