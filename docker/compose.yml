@@ -34,12 +34,15 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+        required: false
 
       postgres:
         condition: service_healthy
+        required: false
 
       mongo:
         condition: service_started
+        required: false
 
     networks:
       - eventur
