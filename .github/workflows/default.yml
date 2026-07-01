@@ -34,7 +34,7 @@ on:
         default: "main"
 
     secrets:
-      PERSONAL_ACCESS_TOKEN:
+      DEVKIT_TOKEN:
         required: true
 
 jobs:
@@ -102,7 +102,7 @@ jobs:
     steps:
       - name: Trigger packages rebuild
         env:
-          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEVKIT_TOKEN }}
         run: |
           gh api \
             repos/eventur-dev/packages/dispatches \
