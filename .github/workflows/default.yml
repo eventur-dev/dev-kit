@@ -1,0 +1,111 @@
+name: Eventur CI
+
+on:
+  workflow_call:
+    inputs:
+      php-version:
+        required: false
+        type: string
+        default: "8.5"
+
+      mysql:
+        required: false
+        type: boolean
+        default: false
+
+      postgres:
+        required: false
+        type: boolean
+        default: false
+
+      mongo:
+        required: false
+        type: boolean
+        default: false
+
+      all-services:
+        required: false
+        type: boolean
+        default: false
+
+      dev-kit-ref:
+        required: false
+        type: string
+        default: "main"
+
+    secrets:
+      DEVKIT_TOKEN:
+        required: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    env:
+      PHP_VERSION: ${{ inputs.php-version }}
+      DEVKIT_MYSQL: ${{ inputs.mysql && '1' || '' }}
+      DEVKIT_POSTGRES: ${{ inputs.postgres && '1' || '' }}
+      DEVKIT_MONGO: ${{ inputs.mongo && '1' || '' }}
+      DEVKIT_ALL_SERVICES: ${{ inputs.all-services && '1' || '' }}
+
+    steps:
+      - name: Checkout package
+        uses: actions/checkout@v4
+
+      - name: Checkout dev-kit
+        uses: actions/checkout@v4
+        with:
+          repository: eventur-dev/dev-kit
+          ref: ${{ inputs.dev-kit-ref }}
+          path: .dev-kit
+
+      - name: Build
+        run: ./bin/dev build
+
+      - name: Start containers
+        run: ./bin/dev up
+
+      - name: Composer validate
+        run: ./bin/dev composer-validate
+
+      - name: Composer install
+        run: ./bin/dev composer-install
+
+      - name: Rector
+        run: ./bin/dev rector-check
+
+      - name: PHP CS Fixer
+        run: ./bin/dev cs-check
+
+      - name: PHPStan
+        run: ./bin/dev phpstan
+
+      - name: Unit tests
+        run: ./bin/dev test-unit
+
+      - name: Integration tests
+        run: ./bin/dev test-integration
+
+      - name: Coverage
+        run: ./bin/dev test-cover-strict
+
+      - name: Shutdown
+        if: always()
+        run: ./bin/dev down
+
+  publish-packages:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger packages rebuild
+        env:
+          GH_TOKEN: ${{ secrets.DEVKIT_TOKEN }}
+        run: |
+          gh api \
+            repos/eventur-dev/packages/dispatches \
+            -f event_type=package-updated \
+            -f client_payload[repository]="${{ github.repository }}" \
+            -f client_payload[sha]="${{ github.sha }}"

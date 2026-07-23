@@ -1,0 +1,12 @@
+{
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.eventur.dev"
+    }
+  ],
+  "config": {
+    "preferred-install": "dist",
+    "github-protocols": ["https"]
+  }
+}

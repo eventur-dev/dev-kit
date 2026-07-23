@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -d tests/Unit ]] || \
+   ! find tests/Unit -type f \( -name "*Test.php" -o -name "*.phpt" \) | grep -q .; then
+    echo "No unit tests found. Skipping strict coverage."
+    exit 0
+fi
+
+XDEBUG_MODE=coverage \
+php -d memory_limit=-1 \
+    vendor/bin/phpunit \
+    --testdox \
+    --colors=never \
+    --coverage-text \
+    --display-deprecations \
+    --fail-on-incomplete \
+    --fail-on-risky \
+    --fail-on-skipped \
+    --fail-on-warning \
+| tee /tmp/coverage.out
+
+grep -E 'Lines:\s+100\.00%|Lines:\s+\(0/0\)' /tmp/coverage.out > /dev/null || {
+    echo -e '\n\033[0;31m❌ Code coverage is below 100%.\033[0m\n'
+    exit 1
+}

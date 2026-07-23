@@ -1,0 +1,7 @@
+services:
+    component:
+        working_dir: /eventur/${COMPOSE_PROJECT_NAME}
+
+        volumes:
+            - ../:/eventur
+            - ./.dev-kit/docker/composer/config.local.json:/tmp/composer/config.json:ro

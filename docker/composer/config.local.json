@@ -1,0 +1,31 @@
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../.local-packages/dev-tools-config",
+            "canonical": true,
+            "options": {
+                "symlink": false,
+                "reference": "config"
+            }
+        },
+        {
+            "type": "path",
+            "url": "../.local-packages/*",
+            "options": {
+                "symlink": true,
+                "reference": "config"
+            }
+        },
+        {
+            "type": "composer",
+            "url": "https://packages.eventur.dev"
+        }
+    ],
+    "config": {
+        "preferred-install": "dist",
+        "github-protocols": [
+            "https"
+        ]
+    }
+}

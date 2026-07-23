@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+commands=(
+    composer-validate
+    cs-check
+    rector-check
+    phpstan
+    test-cover-strict
+)
+
+failed=()
+passed=()
+
+for command in "${commands[@]}"; do
+    echo
+    echo "============================================================"
+    echo "Running: $command"
+    echo "============================================================"
+    echo
+
+    if "/workspace/.dev-kit/commands/$command"; then
+        passed+=("$command")
+    else
+        failed+=("$command")
+    fi
+done
+
+echo
+echo "============================================================"
+echo "Summary"
+echo "============================================================"
+echo
+
+echo "Passed (${#passed[@]}):"
+for command in "${passed[@]}"; do
+    echo "  ✓ $command"
+done
+
+echo
+
+if [[ ${#failed[@]} -gt 0 ]]; then
+    echo "Failed (${#failed[@]}):"
+    for command in "${failed[@]}"; do
+        echo "  ✗ $command"
+    done
+
+    exit 1
+fi
+
+echo "All checks passed."
