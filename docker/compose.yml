@@ -110,6 +110,8 @@ services:
       - --replSet
       - rs0
       - --bind_ip_all
+      - --setParameter
+      - enableTestCommands=1
 
     volumes:
       - mongo-data:/data/db
