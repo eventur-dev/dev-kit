@@ -7,7 +7,6 @@ ARG GID=1000
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_HOME=/tmp/composer
-ENV PHP_CS_FIXER_IGNORE_ENV=1
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
