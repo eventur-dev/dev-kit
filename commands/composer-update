@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export COMPOSER_ROOT_VERSION="${COMPOSER_ROOT_VERSION:-1.x-dev}"
+export COMPOSER_ROOT_VERSION="${COMPOSER_ROOT_VERSION:-2.x-dev}"
 
 if [[ "$#" -gt 0 ]]; then
     echo "🔄 Updating selected packages: $*"
